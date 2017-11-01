@@ -7,6 +7,7 @@ public class ObsticleGenerator : MonoBehaviour {
 	public Transform tilePrefab;
 	public Transform obsticalPrefab;
 	public Vector2 mapSize;
+	public float tileSize;
 
 	[Range(0,1)]
 	public float tileOutlinePercent;
@@ -30,7 +31,7 @@ public class ObsticleGenerator : MonoBehaviour {
 				tileCoordinates.Add (new Coord (x, y));
 			}
 		}
-			
+
 		shuffledTileCoordinates = new Queue<Coord> (Utility.RandomlyShuffledArray (tileCoordinates.ToArray (), seed));
 			
 		string holder = "Generated";
@@ -46,7 +47,7 @@ public class ObsticleGenerator : MonoBehaviour {
 			for (int y = 0; y < mapSize.y; y++) {
 				Vector3 tilePosition = CoordinateToPosition (x, y);
 				Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90)) as Transform;
-				newTile.localScale = Vector3.one * (1 - tileOutlinePercent);	
+				newTile.localScale = Vector3.one * (1 - tileOutlinePercent) * tileSize;	
 				newTile.parent = obsticalHolder;
 
 			}
@@ -55,14 +56,16 @@ public class ObsticleGenerator : MonoBehaviour {
 		for (int i = 0; i < obsticleCount; i++) {
 			Coord randomCoordinate = GetRandomCoordinate ();
 			Vector3 obsticlePosition = CoordinateToPosition (randomCoordinate.x, randomCoordinate.y);
-			Transform newObsticle = Instantiate (obsticalPrefab, obsticlePosition + Vector3.up * 0.5f, Quaternion.identity) as Transform;
+			Transform newObsticle = Instantiate (obsticalPrefab, obsticlePosition + Vector3.up * 0.5f, Quaternion.identity) as Transform;	
 			newObsticle.parent = obsticalHolder;
+			newObsticle.localScale = Vector3.one * tileSize;	
+
 		}
 
 	}
 
 	public Vector3 CoordinateToPosition (int x, int y) {
-		return new Vector3 (-mapSize.x / 2 + 0.5f + x, 0f, -mapSize.y / 2 + 0.5f + y);
+		return new Vector3 (-mapSize.x / 2 + 0.5f + x, 0f, -mapSize.y / 2 + 0.5f + y) * tileSize;
 	}
 
 	public Coord GetRandomCoordinate (){
