@@ -5,16 +5,24 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour {
 	public int maxHealth = 100;
 	public int curHealth = 100;
+	//public float health;
 	public float healthBarLength;
-	
+	public GameObject Player;
+
 	// Use this for initialization
 	void Start () {
 		healthBarLength = Screen.width / 2;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		AddjustCurrentHealth(0);
+
+		if (curHealth < 0) {
+			Destroy (Player);
+		}
+
 	}
 	
 	void OnGUI() {
@@ -23,16 +31,23 @@ public class PlayerHealth : MonoBehaviour {
 	
 	public void AddjustCurrentHealth(int adj) {
 		curHealth += adj;
-		
-		if(curHealth < 0)
+	
+
+		if (curHealth <= 0) {
+			EnemeyAI.isPlayerAlive = false;
 			curHealth = 0;
-		
+
+			Destroy (Player);
+
+		}
+
 		if(curHealth > maxHealth)
 			curHealth = maxHealth;
 		
 		if(maxHealth < 1)
 			maxHealth = 1;
 
-		healthBarLength = (Screen.width / 4) * (curHealth / (float)maxHealth);
+		healthBarLength = (Screen.width / 4);
+		//	* (curHealth / (float)maxHealth);
 	}
 }
