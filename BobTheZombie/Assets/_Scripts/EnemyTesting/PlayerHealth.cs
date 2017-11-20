@@ -32,7 +32,7 @@ public class PlayerHealth : MonoBehaviour {
 	public void AddjustCurrentHealth(int adj) {
 		curHealth += adj;
 	
-
+		//players is destroyed when health bar is 0 
 		if (curHealth <= 0) {
 			EnemeyAI.isPlayerAlive = false;
 			curHealth = 0;
