@@ -8,10 +8,11 @@ public class PlayerAttack : MonoBehaviour {
 	
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space) && GetComponent<BoxCollider>())
-		{
+		if (Input.GetKeyDown (KeyCode.Space) && GetComponent<BoxCollider> ()) {
 			Destroy (Enemy);
 			GetComponent<PlayerHealth> ().curHealth += 20;//adds 20 to playerHealth bar and its health bar when kills enemy
+		
 		}
+
 	}
 }
