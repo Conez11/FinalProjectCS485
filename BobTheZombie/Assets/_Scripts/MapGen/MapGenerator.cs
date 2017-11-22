@@ -9,6 +9,7 @@ public class MapGenerator : MonoBehaviour {
 	public Transform floorPrefab;
 	public Transform tilePrefab;
 	public Transform obsticalPrefab;
+	public Transform exitPrefab;
 	public Vector2 mapSize;
 	public int RoomNumber;
 	public float roomSize;
@@ -46,45 +47,96 @@ public class MapGenerator : MonoBehaviour {
 		newRoom = new GameObject (holder).transform;
 		newRoom.parent = transform;
 
-		DoorsGenerator (RoomNumber - 1, RoomNumber - 1, -1, RoomNumber);
+		//gernerate rooms
+		DibsTheRoom (RoomNumber - 1, RoomNumber - 1);
+		DoorsGenerator (RoomNumber - 1, RoomNumber - 1, prng.Next(0,4), RoomNumber);
+		int dx = 0, dy = 0,d=0;
+		for (int x = 0; x < totalRoomNumberLine; x++)
+			for (int y = 0; y < totalRoomNumberLine; y++)
+				if (CheckRoomEx (x, y)) {
+					if (rooms [x - 1, y].S == 0)
+						rooms [x, y].N = 0;
+					if (rooms [x + 1, y].N == 0)
+						rooms [x, y].S = 0;
+					if (rooms [x, y + 1].W == 0)
+						rooms [x, y].E = 0;
+					if (rooms [x, y - 1].E == 0)
+						rooms [x, y].W = 0;
+					if (System.Math.Abs( x-RoomNumber+1) > d) {
+						dx = x; dy = y;
+						d = System.Math.Abs (x - RoomNumber+1);
+					}
+					if (System.Math.Abs( y-RoomNumber+1) > d) {
+						dx = x; dy = y;
+						d = System.Math.Abs (y - RoomNumber+1);
+					}
+				}
 
+		//assign exit
+		bool flag=true;
+		int rdm;
+		while (flag) {
+			rdm = prng.Next (0, 4);
+			switch (rdm) {
+			case 0:
+				if (rooms [dx, dy].N == 1) {
+					rooms [dx, dy].N = -1;
+					flag = false;
+				}
+					
+				break;
+			case 1:
+				if (rooms [dx, dy].E == 1){
+					rooms [dx, dy].E = -1;
+					flag = false;
+				}
+				break;
+			case 2:
+				if (rooms [dx, dy].S == 1){
+					rooms [dx, dy].S = -1;
+					flag = false;
+				}
+				break;
+			case 3:
+				if (rooms [dx, dy].W == 1){
+					rooms [dx, dy].W = -1;
+					flag = false;
+				}
+				break;
+			default:
+				break;
+			}
 
+		}
 
+		for (int x = 0; x < totalRoomNumberLine; x++)
+			for (int y = 0; y < totalRoomNumberLine; y++)
+				if (CheckRoomEx (x, y)) {
+					CreateRoom (rooms [x, y].N, rooms [x, y].E, rooms [x, y].S, rooms [x, y].W, x, y);
+				}
 	}
 
 	public void DoorsGenerator(int x, int y,int comingdir,int numbersOfRooms){
 		if (numbersOfRooms == 0)
 			return;
-		if (numbersOfRooms == 1) {
-			switch (comingdir) {
-			case 0:
-				CreateRoom (0, 1, 1, 1, x, y);
-				return;
-			case 1:
-				CreateRoom (1, 0, 1, 1, x, y);
-				return;
-			case 2:
-				CreateRoom (1, 1, 0, 1, x, y);
-				return;
-			case 3:
-				CreateRoom (1, 1, 1, 0, x, y);
-				return;
-			default:
-				return;
-			}
-		} else {
+		if (CheckRoomEx (x + 1, y) && CheckRoomEx (x - 1, y) && CheckRoomEx (x, y + 1) && CheckRoomEx (x, y - 1)) {
+			return;
+		}
+		else {
 			int s=0, n=0, e=0, w=0;
 			int assignRooms = numbersOfRooms - 1;
-			rooms [x,y].N = 0;
-			rooms [x,y].W = 0;
-			rooms [x,y].E = 0;
-			rooms [x,y].S = 0;
-
+			int opsdir = comingdir - 2;
+			if (comingdir < 2)
+				opsdir = comingdir + 2;
 			while (assignRooms > 0) {
-				int rdm = prng.Next (0, 4);
+				int rdm = prng.Next (0, 7);
 				if (rdm == comingdir) {
 					continue;
 				}
+				if (rdm > 3) {
+					rdm = opsdir;
+				}
+
 				switch (rdm) {
 				case 0:
 					if (CheckRoomEx (x - 1, y))
@@ -110,17 +162,35 @@ public class MapGenerator : MonoBehaviour {
 					break;
 				}
 				assignRooms--;
+
 			}
 
-			if (s == 0&&!CheckRoomEx (x + 1, y))
-				rooms [x,y].S = 1;
-			if (n == 0&&!CheckRoomEx (x - 1, y))
-				rooms [x,y].N = 1;
-			if (e == 0&&!CheckRoomEx (x + 1, y))
-				rooms [x,y].E = 1;
-			if (w == 0&&!CheckRoomEx (x, y - 1))
-				rooms [x,y].W = 1;
-			CreateRoom (rooms[x,y].N, rooms[x,y].E, rooms[x,y].S, rooms[x,y].W, x, y);
+			if (!CheckRoomEx (x + 1, y)) {
+				if(s == 0)
+					rooms [x, y].S = 1;
+				else
+					DibsTheRoom (x + 1, y);
+			}
+			if (!CheckRoomEx (x - 1, y)) {
+				if(n == 0)
+					rooms [x, y].N = 1;
+				else
+					DibsTheRoom (x - 1, y);
+			}
+			if (!CheckRoomEx (x , y + 1)) {
+				
+				if(e == 0)
+					rooms [x, y].E = 1;
+				else
+					DibsTheRoom (x , y + 1);
+			}
+			if (!CheckRoomEx (x, y - 1)) {
+				if(w == 0)
+					rooms [x, y].W = 1;
+				else
+					DibsTheRoom (x, y - 1);
+			}
+
 
 			DoorsGenerator (x - 1, y, 2, n);
 			DoorsGenerator (x, y + 1, 3, e);
@@ -135,6 +205,14 @@ public class MapGenerator : MonoBehaviour {
 		if (rooms [x,y].E==0 || rooms [x,y].W ==0|| rooms [x,y].S ==0|| rooms [x,y].N==0)
 			return true;
 		return false;
+	}
+
+	public void DibsTheRoom(int x,int y)
+	{
+		rooms [x, y].E = 0;
+		rooms [x, y].W = 0;
+		rooms [x, y].S = 0;
+		rooms [x, y].N = 0;
 	}
 
 	public void CreateRoom(int n, int e, int s,int w,int x,int y){
@@ -154,6 +232,7 @@ public class MapGenerator : MonoBehaviour {
 		rg.floorPrefab = floorPrefab;
 		rg.tilePrefab = tilePrefab;
 		rg.obsticalPrefab = obsticalPrefab;
+		rg.exitPrefab = exitPrefab;
 		rg.mapSize = mapSize;
 		rg.tileSize = mapSize.x + 4;
 		rg.obsticleCount = obsticleCount;
@@ -167,7 +246,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	public Vector2 CoordinateToPosition (int x, int y) {
-		return new Vector2 (-mapSize.y+y-1,mapSize.x-x-1) * roomSize;
+		return new Vector2 (-RoomNumber+1+y,RoomNumber-1-x) * roomSize;
 	}
 
 

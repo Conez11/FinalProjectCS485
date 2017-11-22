@@ -9,6 +9,7 @@ public class RoomGenerator : MonoBehaviour {
 	public Transform floorPrefab;
 	public Transform tilePrefab;
 	public Transform obsticalPrefab;
+	public Transform exitPrefab;
 	public Vector2 mapSize;
 	public Vector2 mapLocation;
 	public float tileSize;
@@ -22,13 +23,13 @@ public class RoomGenerator : MonoBehaviour {
 	public int obsticleCount;
 	public int seed;
 
-	[Range(0,1)]
+	[Range(-1,1)]
 	public int north;
-	[Range(0,1)]
+	[Range(-1,1)]
 	public int east;
-	[Range(0,1)]
+	[Range(-1,1)]
 	public int south;
-	[Range(0,1)]
+	[Range(-1,1)]
 	public int west;
 
 
@@ -62,6 +63,9 @@ public class RoomGenerator : MonoBehaviour {
 		if (north == 0) {
 			North = passPrefab;
 		}
+		if(north==-1){
+			North = exitPrefab;
+		}
 		Vector3 nv = new Vector3 (0+mapLocation.x * tileSize, 1f, (tileSize/2 - 0.5f)*tileSize+mapLocation.y * tileSize);
 		Transform northWall = Instantiate (North, nv, Quaternion.identity) as Transform;
 		northWall.parent = obsticalHolder;
@@ -70,6 +74,9 @@ public class RoomGenerator : MonoBehaviour {
 		Transform East=wallPrefab;
 		if (east == 0) {
 			East = passPrefab;
+		}
+		if(east==-1){
+			East = exitPrefab;
 		}
 		Vector3 ev = new Vector3 ((tileSize/2 - 0.5f)*tileSize+mapLocation.x * tileSize, 1f, 0+mapLocation.y * tileSize);
 		Transform eastWall = Instantiate (East, ev, Quaternion.Euler (Vector3.up * 90)) as Transform;
@@ -80,6 +87,9 @@ public class RoomGenerator : MonoBehaviour {
 		if (south == 0) {
 			South = passPrefab;
 		}
+		if(south==-1){
+			North = exitPrefab;
+		}
 		Vector3 sv = new Vector3 (0+mapLocation.x * tileSize, 1f, -(tileSize/2 - 0.5f)*tileSize+mapLocation.y * tileSize);
 		Transform southWall = Instantiate (South, sv, Quaternion.identity) as Transform;
 		southWall.parent = obsticalHolder;
@@ -89,6 +99,9 @@ public class RoomGenerator : MonoBehaviour {
 		Transform West=wallPrefab;
 		if (west == 0) {
 			West = passPrefab;
+		}
+		if(west==-1){
+			West = exitPrefab;
 		}
 		Vector3 wv = new Vector3 (-(tileSize/2 - 0.5f)*tileSize+mapLocation.x * tileSize, 1f, 0+mapLocation.y * tileSize);
 		Transform westWall = Instantiate (West, wv, Quaternion.Euler (Vector3.up * 90)) as Transform;
