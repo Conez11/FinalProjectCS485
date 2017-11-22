@@ -152,6 +152,7 @@ public class EnemyFSM : MonoBehaviour {
 			Vector3 playerPosition = new Vector3 (player.position.x, 0, player.position.z);
 			if (!isDead) {
 				pathfinder.SetDestination (playerPosition);
+				//TESTING
 			}
 			yield return new WaitForSeconds (refreshRate);
 		}
