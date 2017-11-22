@@ -5,14 +5,24 @@ using UnityEngine.UI;
 
 public class PlayerAttack : MonoBehaviour {
 	public GameObject Enemy;
-	
+	public string targetTag;
 	void Update()
 	{
+		/*
 		if (Input.GetKeyDown (KeyCode.Space) && GetComponent<BoxCollider> ()) {
 			Destroy (Enemy);
 			GetComponent<PlayerHealth> ().curHealth += 20;//adds 20 to playerHealth bar and its health bar when kills enemy
-		
+	
 		}
+	*/
+	}
 
+	void OnTriggerStay(Collider other)
+	{
+		
+		if (Input.GetKeyDown (KeyCode.Space)&&other.CompareTag(targetTag)) {
+			other.gameObject.SetActive (false);
+			GetComponent<PlayerHealth> ().curHealth += 20;
+		}
 	}
 }
