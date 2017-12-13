@@ -14,6 +14,7 @@ public class RoomGenerator : MonoBehaviour {
 	public Vector2 mapLocation;
 	public float tileSize;
 
+	public Transform wayPoint;
 	public Transform enemyPrefab;
 	public Transform enemySPPrefab;
 	public int enemyCount;
@@ -172,7 +173,7 @@ public class RoomGenerator : MonoBehaviour {
 				continue;
 			}
 			Vector3 pos = CoordinateToPosition (x, y);
-
+			obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemyPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
 
@@ -188,7 +189,7 @@ public class RoomGenerator : MonoBehaviour {
 				continue;
 			}
 			Vector3 pos = CoordinateToPosition (x, y);
-
+			obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemySPPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
 			EnemyPathGeneration (x, y, enemy);
@@ -200,14 +201,29 @@ public class RoomGenerator : MonoBehaviour {
 	{
 		string holder = "Path";
 
-		Transform pathHolder = Enemy.GetComponent(holder).transform;
+		Transform pathHolder = Enemy.Find(holder).transform;
+
+		Vector3 pos = CoordinateToPosition (x, y);
+		Transform waypoint = Instantiate (wayPoint, pos, Quaternion.identity)as Transform;
+		waypoint.parent = pathHolder;
 
 
+		Vector3 pos1 = CoordinateToPosition (x, y-1);
+		Transform waypoint1 = Instantiate (wayPoint, pos1, Quaternion.identity)as Transform;
+		waypoint1.parent = pathHolder;
 
 
+		Vector3 pos2 = CoordinateToPosition (x+1, y-1);
+		Transform waypoint2 = Instantiate (wayPoint, pos2, Quaternion.identity)as Transform;
+		waypoint2.parent = pathHolder;
 
+		Vector3 pos3 = CoordinateToPosition (x+1, y);
+		Transform waypoint3 = Instantiate (wayPoint, pos3, Quaternion.identity)as Transform;
+		waypoint3.parent = pathHolder;
 
-
+		Vector3 pos4 = CoordinateToPosition (x, y);
+		Transform waypoint4 = Instantiate (wayPoint, pos4, Quaternion.identity)as Transform;
+		waypoint4.parent = pathHolder;
 	}
 
 	public bool isObstical(Coord c)

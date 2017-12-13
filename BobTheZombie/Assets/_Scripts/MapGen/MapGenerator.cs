@@ -16,6 +16,7 @@ public class MapGenerator : MonoBehaviour {
 
 	public Transform enemyPrefab;
 	public Transform enemySPPrefab;
+	public Transform wayPoint;
 	public int enemyCount;
 	public int enemySPCount;
 
@@ -250,7 +251,7 @@ public class MapGenerator : MonoBehaviour {
 		rg.enemySPPrefab=enemySPPrefab;
 		rg.enemyCount=enemyCount;
 		rg.enemySPCount=enemySPCount;
-
+		rg.wayPoint = wayPoint;
 	}
 
 	public Vector2 CoordinateToPosition (int x, int y) {
