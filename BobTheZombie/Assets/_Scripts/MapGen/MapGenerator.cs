@@ -14,6 +14,11 @@ public class MapGenerator : MonoBehaviour {
 	public int RoomNumber;
 	public float roomSize;
 
+	public Transform enemyPrefab;
+	public Transform enemySPPrefab;
+	public int enemyCount;
+	public int enemySPCount;
+
 	Doors[,] rooms;
 	Transform newRoom;
 
@@ -241,7 +246,10 @@ public class MapGenerator : MonoBehaviour {
 		rg.tileOutlinePercent = 1;
 		rg.transform.parent = newRoom;
 		rg.transform.localScale =Vector3.one;
-
+		rg.enemyPrefab=enemyPrefab;
+		rg.enemySPPrefab=enemySPPrefab;
+		rg.enemyCount=enemyCount;
+		rg.enemySPCount=enemySPCount;
 
 	}
 
@@ -294,4 +302,5 @@ public class MapGenerator : MonoBehaviour {
 
 		}
 	}
+
 }

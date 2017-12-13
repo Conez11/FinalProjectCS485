@@ -14,11 +14,18 @@ public class RoomGenerator : MonoBehaviour {
 	public Vector2 mapLocation;
 	public float tileSize;
 
+	public Transform enemyPrefab;
+	public Transform enemySPPrefab;
+	public int enemyCount;
+	public int enemySPCount;
+
+
 	[Range(0,1)]
 	public float tileOutlinePercent;
 
 	List<Coord> tileCoordinates;
 	Queue<Coord> shuffledTileCoordinates;
+	List<Coord> obsticleCorrd;
 
 	public int obsticleCount;
 	public int seed;
@@ -40,6 +47,7 @@ public class RoomGenerator : MonoBehaviour {
 	public void GenerateRoom() {
 		
 		tileCoordinates = new List<Coord> ();
+		obsticleCorrd = new List<Coord> ();
 
 		for (int x = 0; x < mapSize.x; x++) {
 			for (int y = 0; y < mapSize.y; y++) {
@@ -108,7 +116,7 @@ public class RoomGenerator : MonoBehaviour {
 		westWall.parent = obsticalHolder;
 		westWall.localScale = Vector3.one*tileSize;
 
-		Vector3 fl = new Vector3 (mapLocation.x * tileSize, 0f, mapLocation.y * tileSize);
+		Vector3 fl = new Vector3 (mapLocation.x * tileSize, 1f, mapLocation.y * tileSize);
 		Transform floor = Instantiate (floorPrefab, fl, Quaternion.identity) as Transform;
 		floor.parent = obsticalHolder;
 		floor.localScale = Vector3.one*tileSize;
@@ -125,16 +133,91 @@ public class RoomGenerator : MonoBehaviour {
 
 		for (int i = 0; i < obsticleCount; i++) {
 			Coord randomCoordinate = GetRandomCoordinate ();
+			obsticleCorrd.Add (randomCoordinate);
 			Vector3 obsticlePosition = CoordinateToPosition (randomCoordinate.x, randomCoordinate.y);
 			Transform newObsticle = Instantiate (obsticalPrefab, obsticlePosition + Vector3.up * 0.5f, Quaternion.identity) as Transform;	
 			newObsticle.parent = obsticalHolder;
 			newObsticle.localScale = Vector3.one * tileSize;	
 
 		}
+
+
+		//generate enemies
+		EnemyGeneration();
+
+
 	}
 
+
+	public void EnemyGeneration()
+	{
+		int x, y;
+		System.Random prng = new System.Random (seed);
+		string holder = "Enemies";
+
+		if (transform.Find (holder)) {
+			DestroyImmediate (transform.Find (holder).gameObject);
+		}
+
+		Transform enemyHolder = new GameObject (holder).transform;
+		enemyHolder.parent = transform;
+
+
+		for (int i = 0; i < enemyCount; i++) {
+			int r = prng.Next (0, obsticleCorrd.Count);
+			x=obsticleCorrd.ToArray () [r].x-1+prng.Next(0,3);
+			y=obsticleCorrd.ToArray () [r].y-1+prng.Next(0,3);
+			if (isObstical (new Coord (x, y))) {
+				i--;
+				continue;
+			}
+			Vector3 pos = CoordinateToPosition (x, y);
+
+			Transform enemy = Instantiate (enemyPrefab, pos, Quaternion.identity)as Transform;
+			enemy.parent = enemyHolder;
+
+			EnemyPathGeneration (x, y, enemy);
+		}
+
+		for (int i = 0; i < enemySPCount; i++) {
+			int r = prng.Next (0, obsticleCorrd.Count);
+			x=obsticleCorrd.ToArray () [r].x-1+prng.Next(0,3);
+			y=obsticleCorrd.ToArray () [r].y-1+prng.Next(0,3);
+			if (isObstical (new Coord (x, y))) {
+				i--;
+				continue;
+			}
+			Vector3 pos = CoordinateToPosition (x, y);
+
+			Transform enemy = Instantiate (enemySPPrefab, pos, Quaternion.identity)as Transform;
+			enemy.parent = enemyHolder;
+			EnemyPathGeneration (x, y, enemy);
+
+		}
+	}
+
+	public void EnemyPathGeneration(int x, int y, Transform Enemy)
+	{
+		string holder = "Path";
+
+		Transform pathHolder = Enemy.GetComponent(holder).transform;
+
+
+
+
+
+
+
+	}
+
+	public bool isObstical(Coord c)
+	{
+		return obsticleCorrd.Contains (c);
+	}
+
+
 	public Vector3 CoordinateToPosition (int x, int y) {
-		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
+		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0.5f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
 	}
 
 	public Coord GetRandomCoordinate (){
@@ -142,6 +225,7 @@ public class RoomGenerator : MonoBehaviour {
 		shuffledTileCoordinates.Enqueue (tempCoord);
 		return tempCoord;
 	}
+
 
 	public struct Coord {
 		public int x;
