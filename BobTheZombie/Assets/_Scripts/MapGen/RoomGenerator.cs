@@ -152,7 +152,10 @@ public class RoomGenerator : MonoBehaviour {
 
 	public void EnemyGeneration()
 	{
+		nextStepGen ();
 		int x, y;
+		Coord c;
+		enemyrespwaned = new List<Coord> ();
 		System.Random prng = new System.Random (seed);
 		string holder = "Enemies";
 
@@ -168,62 +171,163 @@ public class RoomGenerator : MonoBehaviour {
 			int r = prng.Next (0, obsticleCorrd.Count);
 			x=obsticleCorrd.ToArray () [r].x-1+prng.Next(0,3);
 			y=obsticleCorrd.ToArray () [r].y-1+prng.Next(0,3);
-			if (isObstical (new Coord (x, y))) {
+			c = new Coord (x, y);
+			if (isObstical (c)||enemyrespwaned.Contains(c)) {
 				i--;
 				continue;
 			}
+			enemyrespwaned.Add (c);
 			Vector3 pos = CoordinateToPosition (x, y);
-			obsticleCorrd.Add (new Coord (x, y));
+			//obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemyPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
 
-			EnemyPathGeneration (x, y, enemy);
+			if (prng.Next (0, 2)==0) {
+				EnemyPathGeneration (x, y, enemy,obsticleCorrd.ToArray () [r],true);
+			}
+			else
+				EnemyPathGeneration (x, y, enemy,obsticleCorrd.ToArray () [r],false);
 		}
 
 		for (int i = 0; i < enemySPCount; i++) {
 			int r = prng.Next (0, obsticleCorrd.Count);
 			x=obsticleCorrd.ToArray () [r].x-1+prng.Next(0,3);
 			y=obsticleCorrd.ToArray () [r].y-1+prng.Next(0,3);
-			if (isObstical (new Coord (x, y))) {
+			c = new Coord (x, y);
+			if (isObstical (c)||enemyrespwaned.Contains(c)) {
 				i--;
 				continue;
 			}
+			enemyrespwaned.Add (c);
 			Vector3 pos = CoordinateToPosition (x, y);
-			obsticleCorrd.Add (new Coord (x, y));
+			//obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemySPPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
-			EnemyPathGeneration (x, y, enemy);
+
+			if (prng.Next (0, 2)==0) {
+				EnemyPathGeneration (x, y, enemy,obsticleCorrd.ToArray () [r],true);
+			}
+			else
+				EnemyPathGeneration (x, y, enemy,obsticleCorrd.ToArray () [r],false);
 
 		}
 	}
-
-	public void EnemyPathGeneration(int x, int y, Transform Enemy)
+	Transform pathHolder;
+	List<Coord> pathCoord;
+	List<Coord> pathObstial;
+	List<Coord> enemyrespwaned;
+	public void EnemyPathGeneration(int x, int y, Transform Enemy,Coord c,bool clockwise)
 	{
 		string holder = "Path";
+		pathHolder = Enemy.Find(holder).transform;
+		pathCoord = new List<Coord> ();
+		pathObstial = new List<Coord> ();
+		//Coord current = new Coord (x, y);
+		//addWayPoint(current);
 
-		Transform pathHolder = Enemy.Find(holder).transform;
+		//Coord finish=nextStep(!clockwise,current,c);
+		//pathStepGen (current, c, finish, clockwise);
+		pathGen(new Coord(x,y),c,clockwise);
 
-		Vector3 pos = CoordinateToPosition (x, y);
+		foreach(Coord p in pathCoord)
+		{
+			addWayPoint(p);
+		}
+	}
+
+	void pathGen(Coord current,Coord cube,bool clockwise){
+		pathObstial.Add (cube);
+		List<Coord> currentpath = new List<Coord> (); 
+		Coord finish = current;
+		 do{
+			if (!(pathObstial.Contains (current)||pathCoord.Contains(current))){
+				pathCoord.Add (current);
+				currentpath.Add(current);
+			}
+			foreach (Coord c in currentpath) {
+				if (isObstical (c)) {
+					pathCoord.Remove (c);
+					pathObstial.Add (c);
+					pathGen ( nextStepForce (!clockwise, c, cube),c, clockwise);
+				}
+			}
+			current = nextStepForce (clockwise, current, cube);
+		}while (!finish.Equals (current));
+
+
+	}
+
+	/*
+	public void pathStepGen(Coord current,Coord c,Coord finish,bool clockwise){
+		//priority, go straight, check around, (0 path not being stepped, 1 path stepped, -1 can't walk,)
+
+
+		//stuck
+		if (current.Equals (finish))
+			return;
+		int i = 0;
+		while(!finish.Equals(current)&&i<15){
+			addWayPoint(current);
+			current=nextStep(clockwise,current,c);
+				i++;
+		}
+
+	}
+
+
+	public Coord nextStep(bool clockwise, Coord currentPos, Coord cube){
+		if (isSurround (currentPos)) {
+			return currentPos;
+		}
+		Coord f = new Coord (currentPos.x - cube.x, currentPos.y - cube.y);
+		if(clockwise)
+			f=ns.ToArray()[(ns.IndexOf (f)+1)%ns.Count];
+		else
+			f=ns.ToArray()[(ns.IndexOf (f)-1+ns.Count)%ns.Count];
+		f.x += cube.x;
+		f.y += cube.y;
+		if (isObstical (f)) {
+			//double recursion
+			pathStepGen(currentPos,f,nextStepForce(clockwise,f,cube),clockwise);
+			return nextStepForce(clockwise,f,cube);
+		}
+		return f;
+	}
+	*/
+	public Coord nextStepForce(bool clockwise, Coord currentPos, Coord cube){
+		
+		Coord f = new Coord (currentPos.x - cube.x, currentPos.y - cube.y);
+
+		if(clockwise)
+			f=ns.ToArray()[(ns.IndexOf (f)+1)%ns.Count];
+		else
+			f=ns.ToArray()[(ns.IndexOf (f)-1+ns.Count)%ns.Count];
+		f.x += cube.x;
+		f.y += cube.y;
+		return f;
+	}
+	private List<Coord> ns;
+	public void nextStepGen(){
+		ns = new List<Coord> ();
+		ns.Add (new Coord (-1,-1));
+		ns.Add (new Coord (-1,0));
+		ns.Add (new Coord (-1,1));
+		ns.Add (new Coord (0,1));
+		ns.Add (new Coord (1,1));
+		ns.Add (new Coord (1,0));
+		ns.Add (new Coord (1,-1));
+		ns.Add (new Coord (0,-1));
+	}
+
+	public void addWayPoint(Coord c){
+		
+		Vector3 pos = CoordinateToPosition (c.x, c.y);
 		Transform waypoint = Instantiate (wayPoint, pos, Quaternion.identity)as Transform;
 		waypoint.parent = pathHolder;
+	}
 
-
-		Vector3 pos1 = CoordinateToPosition (x, y-1);
-		Transform waypoint1 = Instantiate (wayPoint, pos1, Quaternion.identity)as Transform;
-		waypoint1.parent = pathHolder;
-
-
-		Vector3 pos2 = CoordinateToPosition (x+1, y-1);
-		Transform waypoint2 = Instantiate (wayPoint, pos2, Quaternion.identity)as Transform;
-		waypoint2.parent = pathHolder;
-
-		Vector3 pos3 = CoordinateToPosition (x+1, y);
-		Transform waypoint3 = Instantiate (wayPoint, pos3, Quaternion.identity)as Transform;
-		waypoint3.parent = pathHolder;
-
-		Vector3 pos4 = CoordinateToPosition (x, y);
-		Transform waypoint4 = Instantiate (wayPoint, pos4, Quaternion.identity)as Transform;
-		waypoint4.parent = pathHolder;
+	public bool isSurround(Coord c){
+		return (obsticleCorrd.Contains (new Coord(c.x-1,c.y))&&obsticleCorrd.Contains (new Coord(c.x,c.y-1))&&obsticleCorrd.Contains (new Coord(c.x+1,c.y))&&obsticleCorrd.Contains (new Coord(c.x,c.y+1)));
 	}
 
 	public bool isObstical(Coord c)
