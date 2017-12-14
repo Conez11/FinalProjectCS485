@@ -4,8 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerAttack : MonoBehaviour {
+
 	public GameObject Enemy;
 	public string targetTag;
+
+	public int killCount;
+
+	void Start() {
+		killCount = 0;
+	}
+
 	void Update()
 	{
 		/*
@@ -22,6 +30,7 @@ public class PlayerAttack : MonoBehaviour {
 		
 		if (Input.GetKeyDown (KeyCode.Space)&&other.CompareTag(targetTag)) {
 			other.gameObject.SetActive (false);
+			killCount++;
 			GetComponent<PlayerHealth> ().curHealth += 20;
 		}
 	}

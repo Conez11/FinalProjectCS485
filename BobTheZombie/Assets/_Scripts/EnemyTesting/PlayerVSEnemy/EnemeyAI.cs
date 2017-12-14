@@ -59,7 +59,7 @@ public class EnemeyAI : MonoBehaviour {
 		if (Physics.Raycast (transform.position, transform.forward, out hit)) {
 			if (hit.collider.gameObject.tag == "Player") {
 				//lowers players health by 1 
-				hit.collider.gameObject.GetComponent<PlayerHealth> ().curHealth -= 1;//gets component from player health script	
+				hit.collider.gameObject.GetComponent<PlayerBrains> ().ModifyHealth(-1);//gets component from player health script	
 			}
 
 		}
