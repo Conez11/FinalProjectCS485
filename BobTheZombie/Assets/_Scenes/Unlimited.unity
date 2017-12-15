@@ -383,7 +383,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 4424718130755136, guid: b12bdc551c134c348851b828564d061c, type: 2}
   obsticalPrefab: {fileID: 4711706669779422, guid: bee97324f6e02594ba3b52fef863d076,
     type: 2}
-  exitPrefab: {fileID: 4303067991831058, guid: 692c1c25fc1d12142a315cf0eb3f86ab, type: 2}
+  exitPrefab: {fileID: 4923082592815104, guid: c1aed6bc66c256a48b5d047ec0952cf1, type: 2}
   mapSize: {x: 8, y: 8}
   RoomNumber: 10
   roomSize: 12
