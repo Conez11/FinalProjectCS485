@@ -8,6 +8,7 @@ public class MenuScript : MonoBehaviour {
 
 	public void GameStartEvent()
 	{
+		PlayerPrefs.SetInt ("Score", 0);
 		SceneManager.LoadSceneAsync ("Unlimited",LoadSceneMode.Single);	
 	}
 
