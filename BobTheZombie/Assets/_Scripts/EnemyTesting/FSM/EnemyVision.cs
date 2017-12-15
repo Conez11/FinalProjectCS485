@@ -11,6 +11,8 @@ public class EnemyVision : MonoBehaviour {
 	public float visionDistance;
 	public float timeToAcquire;
 	public bool playerAcquired;
+	public bool playerLost;
+	public float timeToLose;
 
 	Transform player;
 	Color visionColor;
@@ -40,6 +42,9 @@ public class EnemyVision : MonoBehaviour {
 			PlayerSpotted ();
 		} else {
 			playerAcquired = false;
+			if (visionTimer == timeToLose) {
+				playerLost = true;
+			}
 		}
 
 	}

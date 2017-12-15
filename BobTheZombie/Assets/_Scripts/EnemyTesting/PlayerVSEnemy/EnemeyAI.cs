@@ -9,21 +9,34 @@ public class EnemeyAI : MonoBehaviour {
 	public float moveSpeed;
 	public static bool isPlayerAlive = true;
 
+	public float attackSpeed = 2;
+	public float nextAttack;
+	public int damage;
 
-	
+	EnemyController controller;
+	EnemyVision vision;
+
+	void Start () {
+
+		vision = gameObject.GetComponent<EnemyVision> ();
+		controller = gameObject.GetComponent<EnemyController> ();
+
+	}
+
 
 	void Update ()
 	{
+		nextAttack += Time.deltaTime;
 		if (isPlayerAlive) {
 
 
 			playerDistance = Vector3.Distance (player.position, transform.position);
 			//if player is less than 20f looks
-			if (playerDistance < 20f) {
-				lookAtPlayer ();
-			}
+//			if ((playerDistance < 20f) && vision.playerAcquired) {
+//				lookAtPlayer ();
+//			}
 			//if distance is less than 17 it chases
-			if (playerDistance < 17f) {
+			if (vision.playerAcquired) {
 
 				//chases player
 				if (playerDistance > 5f) {
@@ -32,6 +45,10 @@ public class EnemeyAI : MonoBehaviour {
 				//attacks it
 				else if (playerDistance < 5f) {
 					attack ();
+				}
+
+				 if (vision.playerLost) {
+					StartCoroutine (controller.FollowPath (controller.waypoints));
 				}
 		
 			}
@@ -49,19 +66,18 @@ public class EnemeyAI : MonoBehaviour {
 
 	void chase()
 	{
+		lookAtPlayer ();
 		transform.Translate (Vector3.forward * moveSpeed * Time.deltaTime);
 
 	}
 	void attack()
 	{
-		RaycastHit hit;
-
-		if (Physics.Raycast (transform.position, transform.forward, out hit)) {
-			if (hit.collider.gameObject.tag == "Player") {
-				//lowers players health by 1 
-				hit.collider.gameObject.GetComponent<PlayerBrains> ().ModifyHealth(-1);//gets component from player health script	
-			}
-
+		if ( nextAttack >= attackSpeed) {
+			GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBrains> ().ModifyHealth(-damage);//gets component from player health script
+			nextAttack = 0;
 		}
+
+
+
 	}
 }

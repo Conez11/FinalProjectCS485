@@ -10,9 +10,7 @@ public class EnemyController : MonoBehaviour {
 
 	public Transform pathHolder;
 
-	Vector3[] waypoints;
-
-
+	public Vector3[] waypoints;
 
 	void Start () {
 		// Initialize waypoint in pathHolder for enemy to follow
@@ -27,11 +25,11 @@ public class EnemyController : MonoBehaviour {
 	
 
 	void Update () {
-		
+			
 	} 
 
 
-	IEnumerator FollowPath (Vector3[] waypoints) {
+	public IEnumerator FollowPath (Vector3[] waypoints) {
 		transform.position = waypoints [0];			//Enemy starts at first waypoint
 		int waypointIndex = 1;
 		Vector3 targetWaypoint = waypoints [waypointIndex];		// next waypoint
@@ -52,7 +50,7 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	//
-	IEnumerator TurnToFace (Vector3 lookTarget) {
+	public IEnumerator TurnToFace (Vector3 lookTarget) {
 		Vector3 dirToTarget = (lookTarget - transform.position).normalized;
 		float targetAngle = 90 - Mathf.Atan2 (dirToTarget.z, dirToTarget.x) * Mathf.Rad2Deg;
 

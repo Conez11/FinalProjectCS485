@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class PlayerBrains : MonoBehaviour {
@@ -20,11 +21,14 @@ public class PlayerBrains : MonoBehaviour {
 	public Sprite[] brainSprites;
 
 	public PlayerAttack attack;
+	public GameObject gameover;
 	private int kills;
 	private int killsIndex;
 
+
 	void Start () {
 		attack = gameObject.GetComponent<PlayerAttack> ();
+		gameover.SetActive(false);
 		currentHealth = brainsAmount * healthPerBrain;
 		//maxHealth = brainsAmount * healthPerBrain;
 		elapsedTime = 0f;
@@ -62,7 +66,6 @@ public class PlayerBrains : MonoBehaviour {
 	void UpdateBrains() {
 		bool empty = false;
 		int i = 0;
-
 		foreach (Image image in brainImages) {
 			if (empty) {
 				image.sprite = brainSprites [0];
@@ -83,8 +86,14 @@ public class PlayerBrains : MonoBehaviour {
 
 	public void ModifyHealth(int amount) {
 		currentHealth += amount;
+
 		currentHealth = Mathf.Clamp (currentHealth, 0, brainsAmount * healthPerBrain);
+
 		UpdateBrains ();
+		if (currentHealth <= 0) {
+			gameover.SetActive(true);
+			//SceneManager.LoadSceneAsync ("Menu", LoadSceneMode.Single);
+		}
 	}
 		
 }

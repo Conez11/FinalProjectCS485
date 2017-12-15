@@ -8,7 +8,7 @@ public class MenuScript : MonoBehaviour {
 
 	public void GameStartEvent()
 	{
-		SceneManager.LoadScene ("MapTest2",LoadSceneMode.Single);	
+		SceneManager.LoadSceneAsync ("Unlimited",LoadSceneMode.Single);	
 	}
 
 
