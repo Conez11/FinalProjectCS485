@@ -28,7 +28,7 @@ public class PlayerAttack : MonoBehaviour {
 	void OnTriggerStay(Collider other)
 	{
 		
-		if (Input.GetKeyDown (KeyCode.Space)&&other.CompareTag(targetTag)) {
+		if (Input.GetKeyDown (KeyCode.E)&&other.CompareTag(targetTag)) {
 			other.gameObject.SetActive (false);
 			killCount++;
 			GetComponent<PlayerHealth> ().curHealth += 20;
