@@ -337,7 +337,7 @@ public class RoomGenerator : MonoBehaviour {
 
 
 	public Vector3 CoordinateToPosition (int x, int y) {
-		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0.5f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
+		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
 	}
 
 	public Vector3 CoordinateToPositionEnemy (int x, int y) {
