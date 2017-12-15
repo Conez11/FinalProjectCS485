@@ -321,7 +321,7 @@ public class RoomGenerator : MonoBehaviour {
 
 	public void addWayPoint(Coord c){
 		
-		Vector3 pos = CoordinateToPosition (c.x, c.y);
+		Vector3 pos = CoordinateToPositionEnemy (c.x, c.y);
 		Transform waypoint = Instantiate (wayPoint, pos, Quaternion.identity)as Transform;
 		waypoint.parent = pathHolder;
 	}
@@ -339,6 +339,11 @@ public class RoomGenerator : MonoBehaviour {
 	public Vector3 CoordinateToPosition (int x, int y) {
 		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0.5f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
 	}
+
+	public Vector3 CoordinateToPositionEnemy (int x, int y) {
+		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
+	}
+
 
 	public Coord GetRandomCoordinate (){
 		Coord tempCoord = shuffledTileCoordinates.Dequeue ();
