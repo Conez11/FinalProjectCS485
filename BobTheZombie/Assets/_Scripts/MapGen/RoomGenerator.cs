@@ -177,7 +177,7 @@ public class RoomGenerator : MonoBehaviour {
 				continue;
 			}
 			enemyrespwaned.Add (c);
-			Vector3 pos = CoordinateToPosition (x, y);
+			Vector3 pos = CoordinateToPositionEnemy (x, y);
 			//obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemyPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
@@ -199,7 +199,7 @@ public class RoomGenerator : MonoBehaviour {
 				continue;
 			}
 			enemyrespwaned.Add (c);
-			Vector3 pos = CoordinateToPosition (x, y);
+			Vector3 pos = CoordinateToPositionEnemy (x, y);
 			//obsticleCorrd.Add (new Coord (x, y));
 			Transform enemy = Instantiate (enemySPPrefab, pos, Quaternion.identity)as Transform;
 			enemy.parent = enemyHolder;
@@ -341,7 +341,7 @@ public class RoomGenerator : MonoBehaviour {
 	}
 
 	public Vector3 CoordinateToPositionEnemy (int x, int y) {
-		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
+		return new Vector3 (-mapSize.x / 2 + 0.5f + x+mapLocation.x, 0.1f, -mapSize.y / 2 + 0.5f + y+mapLocation.y) * tileSize;
 	}
 
 
