@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerAttack : MonoBehaviour {
 
@@ -32,6 +33,9 @@ public class PlayerAttack : MonoBehaviour {
 			other.gameObject.SetActive (false);
 			killCount++;
 			GetComponent<PlayerHealth> ().curHealth += 20;
+		}
+		if (Input.GetKeyDown (KeyCode.E)&&other.CompareTag ("Exit")) {
+			SceneManager.LoadSceneAsync( SceneManager.GetActiveScene ().buildIndex);
 		}
 	}
 }

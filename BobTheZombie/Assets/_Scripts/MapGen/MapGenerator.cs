@@ -13,6 +13,7 @@ public class MapGenerator : MonoBehaviour {
 	public Vector2 mapSize;
 	public int RoomNumber;
 	public float roomSize;
+	public bool isRandom;
 
 	public Transform enemyPrefab;
 	public Transform enemySPPrefab;
@@ -31,7 +32,11 @@ public class MapGenerator : MonoBehaviour {
 		GenerateMap ();
 	}
 	public void GenerateMap (){
-		prng = new System.Random (seed);
+		if (isRandom) {
+			prng = new System.Random ();
+		}
+		else
+			prng = new System.Random (seed);
 		roomInit ();
 	}
 
